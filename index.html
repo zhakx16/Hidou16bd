@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Birthday Collection - Hidaya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --vogue-red: #800020;
+            --vogue-rose: #e31b23;
+            --vogue-gold: #ffd700;
+            --vogue-pink: #ff69b4;
+            --vogue-black: #0d0000;
+        }
+
+        body {
+            background-color: var(--vogue-black);
+            color: #fff;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            margin: 0;
+        }
+
+        h1, .vogue-header { font-family: 'Playfair Display', serif; }
+
+        .bg-gradient {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #2a0202 0%, #1a0000 50%, #4a0404 100%);
+            z-index: -1;
+        }
+
+        /* Dedicated Header for Hidaya */
+        .header-container {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 30px 0;
+            text-align: center;
+            z-index: 50;
+            pointer-events: none;
+        }
+
+        .vogue-header {
+            font-size: 1.2rem;
+            letter-spacing: 0.8em;
+            text-transform: uppercase;
+            background: linear-gradient(to right, transparent, var(--vogue-gold), #fff, var(--vogue-gold), transparent);
+          -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* Footer Signature */
+        .footer-signature {
+            position: fixed;
+            bottom: 15px;
+            width: 100%;
+            text-align: center;
+            z-index: 50;
+            font-size: 0.6rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            pointer-events: none;
+        }
+
+        #particles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .heart {
+            position: absolute;
+            color: var(--vogue-pink);
+            opacity: 0.3;
+            animation: floatUp 6s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+        }
+
+        .page-wrapper {
+            position: relative;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 10;
+        }
+
+        .page {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(1.1) rotate(2deg);
+            transition: all 1.2s cubic-bezier(0.19, 1, 0.22, 1);
+            pointer-events: none;
+            visibility: hidden;
+        }
+
+        .page.active {
+            opacity: 1;
+            transform: scale(1) rotate(0deg);
+            pointer-events: auto;
+            visibility: visible;
+        }
+
+        .image-container {
+            position: relative;
+            width: 280px;
+            height: 400px;
+            overflow: hidden;
+            border: 2px solid var(--vogue-gold);
+            box-shadow: 0 0 30px rgba(227, 27, 35, 0.4);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: zoomPulse 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes zoomPulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.15); }
+        }
+
+        .page-title {
+            font-size: clamp(2.5rem, 10vw, 5rem);
+            background: linear-gradient(to right, var(--vogue-gold), #fff, var(--vogue-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            text-align: center;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+        }
+
+        .nav-controls {
+            position: fixed;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .btn-next {
+            background: rgba(128, 0, 32, 0.4);
+            backdrop-filter: blur(10px);
+            border: 1.5px solid var(--vogue-gold);
+            color: var(--vogue-gold);
+            padding: 14px 45px;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.4s;
+            border-radius: 50px;
+        }
+
+        .btn-next:hover {
+            background: var(--vogue-gold);
+            color: var(--vogue-red);
+            box-shadow: 0 0 20px var(--vogue-gold);
+        }
+
+        .corner {
+            position: fixed;
+            width: 120px;
+            height: 120px;
+            border: 2px solid var(--vogue-gold);
+            z-index: 10;
+            pointer-events: none;
+            opacity: 0.4;
+        }
+        .top-left { top: 20px; left: 20px; border-right: none; border-bottom: none; border-radius: 20px 0 0 0; }
+        .bottom-right { bottom: 20px; right: 20px; border-left: none; border-top: none; border-radius: 0 0 20px 0; }
+
+        .sparkle {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleAnim 2s infinite;
+        }
+
+        @keyframes sparkleAnim {
+            0%, 100% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-gradient"></div>
+    <div id="particles-container"></div>
+    
+    <header class="header-container">
+        <div class="vogue-header"> For Hidaya</div>
+    </header>
+
+    <footer class="footer-signature">
+        made by @elf_zak
+    </footer>
+
+    <div class="corner top-left"></div>
+    <div class="corner bottom-right"></div>
+
+    <main class="page-wrapper" id="gallery">
+        <!-- Page 1 -->
+        <div class="page active" id="page-1">
+            <div class="text-[0.8rem] tracking-[0.8em] text-[#ffd700] mb-2 uppercase">Collection 01</div>
+            <div class="image-container">
+                <img src="Hidou\IMG-20260512-WA0032.jpg" alt="Birthday 1">
+            </div>
+            <h1 class="page-title">Roses are Red </h1>
+            <div class="mt-4 flex gap-4">
+                <span class="text-[10px] tracking-[0.4em] text-pink-400">HAPPY</span>
+                <span class="text-[10px] tracking-[0.4em] text-yellow-400">BIRTHDAY</span>
+            </div>
+        </div>
+
+        <!-- Page 2 -->
+        <div class="page" id="page-2">
+            <div class="text-[0.8rem] tracking-[0.8em] text-[#ffd700] mb-2 uppercase">Collection 02</div>
+            <div class="image-container">
+                <img src="Hidou\IMG-20260512-WA0018.jpg" alt="Birthday 2">
+            </div>
+            <h1 class="page-title">Violets are blue</h1>
+            <div class="mt-4 flex gap-4">
+                <span class="text-[10px] tracking-[0.4em] text-pink-400">HAPPY</span>
+                <span class="text-[10px] tracking-[0.4em] text-yellow-400">BIRTHDAY</span>
+            </div>
+        </div>
+
+        <!-- Page 3 -->
+        <div class="page" id="page-3">
+            <div class="text-[0.8rem] tracking-[0.8em] text-[#ffd700] mb-2 uppercase">Collection 03</div>
+            <div class="image-container">
+                <img src="Hidou\IMG-20260512-WA0039.jpg" alt="Birthday 3">
+            </div>
+            <h1 class="page-title">Fuck u bitch</h1>
+            <div class="mt-4 flex gap-4">
+                <span class="text-[10px] tracking-[0.4em] text-pink-400">HAPPY</span>
+                <span class="text-[10px] tracking-[0.4em] text-yellow-400">BIRTHDAY</span>
+            </div>
+        </div>
+
+        <!-- Page 4 -->
+        <div class="page" id="page-4">
+            <div class="text-[0.8rem] tracking-[0.8em] text-[#ffd700] mb-2 uppercase">Collection 04</div>
+            <div class="image-container">
+                <img src="Hidou\IMG-20260512-WA0028.jpg" alt="Birthday 4">
+            </div>
+            <h1 class="page-title">Naah, im gonna be serious 2day</h1>
+            <div class="mt-4 flex gap-4">
+                <span class="text-[10px] tracking-[0.4em] text-pink-400">HAPPY</span>
+                <span class="text-[10px] tracking-[0.4em] text-yellow-400">BIRTHDAY</span>
+            </div>
+        </div>
+
+        <!-- Page 5 -->
+        <div class="page" id="page-5">
+            <div class="text-[0.8rem] tracking-[0.8em] text-[#ffd700] mb-2 uppercase">Collection 05</div>
+            <div class="image-container">
+                <img src="Hidou\IMG-20260512-WA0029.jpg" alt="Birthday 5">
+            </div>
+            <h1 class="page-title">i jst met u for 7months</h1>
+            <div class="mt-4 flex gap-4">
+                <span class="text-[10px] tracking-[0.4em] text-pink-400">HAPPY</span>
+                <span class="text-[10px] tracking-[0.4em] text-yellow-400">BIRTHDAY</span>
+            </div>
+        </div>
+
+        <!-- Pages 6-20 (Simulated for Structure) -->
+        <div class="page" id="page-6"><h1 class="page-title">im almost 18yo</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0039.jpg"></div></div>
+        <div class="page" id="page-7"><h1 class="page-title">but 7 months with u</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0033.jpg"></div></div>
+        <div class="page" id="page-8"><h1 class="page-title">made me human....</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0038.jpg"></div></div>
+        <div class="page" id="page-9"><h1 class="page-title">but im not the MC 2day so its not abt me</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0036.jpg"></div></div>
+        <div class="page" id="page-10"><h1 class="page-title">Its about ur effect</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0035.jpg"></div></div>
+        <div class="page" id="page-11"><h1 class="page-title">i like u when u flash</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0028.jpg"></div></div>
+        <div class="page" id="page-12"><h1 class="page-title">Or when u look like Trash</h1><div class="image-container"><img src="Hidou\IMG-20260512-WA0034.jpg"></div></div>
+        <div class="page" id="page-13"><h1 class="page-title">I like how silly i act around u</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0040.jpg"></div></div>
+        <div class="page" id="page-14"><h1 class="page-title">not cz i feel my self superior </h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0035.jpg"></div></div>
+        <div class="page" id="page-15"><h1 class="page-title">but cz its me around u <d/h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0037.jpg"></div></div>
+        <div class="page" id="page-16"><h1 class="page-title">the real me</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0032.jpg"></div></div>
+        <div class="page" id="page-17"><h1 class="page-title">SO in short</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0021.jpg"></div></div>
+        <div class="page" id="page-18"><h1 class="page-title">I enjoyed meeting u in ts life </h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0029.jpg"></div></div>
+        <div class="page" id="page-19"><h1 class="page-title">And even if i died or u died </h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0039.jpg"></div></div>
+        <div class="page" id="page-20"><h1 class="page-title">Li mat lwl gay btw hhh</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0037.jpg"></div></div>
+        <div class="page" id="page-21"><h1 class="page-title">Im gonna meet u in the next life  </h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0028.jpg"></div></div>
+        <div class="page" id="page-22"><h1 class="page-title">or whatever was the hell we gonna meet in</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0030.jpg"></div></div>
+        <div class="page" id="page-23"><h1 class="page-title">in conclusion, enjoy u r company with me hh and so ur short life</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0037.jpg"></div></div>
+        <div class="page" id="page-24"><h1 class="page-title">Made by zak, a guy that hate drama  ly twinnn</h1><div class="image-container"><img src="Hidou/IMG-20260512-WA0033.jpg"></div></div>
+
+
+
+    </main>
+
+    <div class="nav-controls">
+        <button class="btn-next" onclick="prevPage()" id="prevBtn" style="display: none;">Back</button>
+        <button class="btn-next" onclick="nextPage()">Next Memory</button>
+    </div>
+
+    <script>
+        const totalPages = 24;
+        let currentPage = 1;
+
+        function createAmbience() {
+            const container = document.getElementById('particles-container');
+            for(let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '❤';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                heart.style.animationDelay = Math.random() * 5 + 's';
+                container.appendChild(heart);
+            }
+        }
+
+        function nextPage() {
+            const current = document.getElementById(`page-${currentPage}`);
+            current.classList.remove('active');
+            
+            currentPage = (currentPage < totalPages) ? currentPage + 1 : 1;
+            
+            const next = document.getElementById(`page-${currentPage}`);
+            next.classList.add('active');
+            updateNav();
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                document.getElementById(`page-${currentPage}`).classList.remove('active');
+                currentPage--;
+                document.getElementById(`page-${currentPage}`).classList.add('active');
+                updateNav();
+            }
+        }
+
+        function updateNav() {
+            document.getElementById('prevBtn').style.display = currentPage > 1 ? 'block' : 'none';
+        }
+
+        window.onload = () => {
+            createAmbience();
+            updateNav();
+        };
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextPage();
+            if (e.key === 'ArrowLeft') prevPage();
+        });
+    </script>
+</body>
+</html>
